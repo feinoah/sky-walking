@@ -11,7 +11,7 @@ import java.util.function.Consumer;
  */
 public class RecordPersistenceData implements Iterable {
 
-    private Map<String, RecordData> persistenceData = new HashMap();
+    private Map<String, RecordData> persistenceData = new HashMap<>();
 
     public RecordData getElseCreate(String id) {
         if (!persistenceData.containsKey(id)) {

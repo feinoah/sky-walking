@@ -11,16 +11,19 @@ import com.a.eye.skywalking.collector.worker.config.WorkerConfig;
 import com.a.eye.skywalking.collector.worker.globaltrace.analysis.GlobalTraceAnalysis;
 import com.a.eye.skywalking.collector.worker.httpserver.AbstractPost;
 import com.a.eye.skywalking.collector.worker.httpserver.AbstractPostProvider;
-import com.a.eye.skywalking.collector.worker.node.analysis.*;
+import com.a.eye.skywalking.collector.worker.node.analysis.NodeCompAnalysis;
+import com.a.eye.skywalking.collector.worker.node.analysis.NodeMappingDayAnalysis;
+import com.a.eye.skywalking.collector.worker.node.analysis.NodeMappingHourAnalysis;
+import com.a.eye.skywalking.collector.worker.node.analysis.NodeMappingMinuteAnalysis;
 import com.a.eye.skywalking.collector.worker.noderef.analysis.NodeRefDayAnalysis;
 import com.a.eye.skywalking.collector.worker.noderef.analysis.NodeRefHourAnalysis;
 import com.a.eye.skywalking.collector.worker.noderef.analysis.NodeRefMinuteAnalysis;
+import com.a.eye.skywalking.collector.worker.segment.logic.Segment;
+import com.a.eye.skywalking.collector.worker.segment.logic.SegmentsMessage;
 import com.a.eye.skywalking.collector.worker.segment.persistence.SegmentCostSave;
 import com.a.eye.skywalking.collector.worker.segment.persistence.SegmentExceptionSave;
 import com.a.eye.skywalking.collector.worker.segment.persistence.SegmentSave;
 import com.a.eye.skywalking.collector.worker.storage.AbstractTimeSlice;
-import com.a.eye.skywalking.collector.worker.tools.DateTools;
-import com.a.eye.skywalking.trace.SegmentsMessage;
 import com.a.eye.skywalking.trace.TraceSegment;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -50,6 +53,7 @@ public class SegmentPost extends AbstractPost {
         getClusterContext().findProvider(NodeCompAnalysis.Role.INSTANCE).create(this);
 
         getClusterContext().findProvider(SegmentSave.Role.INSTANCE).create(this);
+
         getClusterContext().findProvider(SegmentCostSave.Role.INSTANCE).create(this);
         getClusterContext().findProvider(SegmentExceptionSave.Role.INSTANCE).create(this);
 
@@ -64,36 +68,42 @@ public class SegmentPost extends AbstractPost {
 
     @Override
     protected void onReceive(String reqJsonStr) throws Exception {
-        SegmentsMessage segmentsMessage = gson.fromJson(reqJsonStr, SegmentsMessage.class);
-        List<TraceSegment> segmentList = segmentsMessage.getSegments();
-        for (TraceSegment newSegment : segmentList) {
-            try {
-                validateData(newSegment);
-            } catch (IllegalArgumentException e) {
-                continue;
-            }
+        List<Segment> segments = SegmentsMessage.INSTANCE.readJsonString(reqJsonStr);
 
-            logger.debug("receive message instanceof TraceSegment, traceSegmentId is %s", newSegment.getTraceSegmentId());
-
-            long minuteSlice = DateTools.getMinuteSlice(newSegment.getStartTime());
-            long hourSlice = DateTools.getHourSlice(newSegment.getStartTime());
-            long daySlice = DateTools.getDaySlice(newSegment.getStartTime());
-            int second = DateTools.getSecond(newSegment.getStartTime());
-            logger.debug("minuteSlice: %s, hourSlice: %s, daySlice: %s, second:%s", minuteSlice, hourSlice, daySlice, second);
-
-            SegmentWithTimeSlice segmentWithTimeSlice = new SegmentWithTimeSlice(newSegment, minuteSlice, hourSlice, daySlice, second);
-            String newSegmentJsonStr = gson.toJson(newSegment);
-            tellSegmentSave(newSegmentJsonStr, daySlice, hourSlice, minuteSlice);
-
-            getSelfContext().lookup(SegmentCostSave.Role.INSTANCE).tell(segmentWithTimeSlice);
-            getSelfContext().lookup(GlobalTraceAnalysis.Role.INSTANCE).tell(segmentWithTimeSlice);
-            getSelfContext().lookup(SegmentExceptionSave.Role.INSTANCE).tell(segmentWithTimeSlice);
-
-            getSelfContext().lookup(NodeCompAnalysis.Role.INSTANCE).tell(segmentWithTimeSlice);
-
-            tellNodeRef(segmentWithTimeSlice);
-            tellNodeMapping(segmentWithTimeSlice);
+        for (Segment newSegment : segments) {
+            getSelfContext().lookup(SegmentSave.Role.INSTANCE).tell(newSegment);
         }
+
+//        SegmentsMessage segmentsMessage = gson.fromJson(reqJsonStr, SegmentsMessage.class);
+//        List<TraceSegment> segmentList = segmentsMessage.getSegments();
+//        for (TraceSegment newSegment : segmentList) {
+//            try {
+//                validateData(newSegment);
+//            } catch (IllegalArgumentException e) {
+//                continue;
+//            }
+//
+//            logger.debug("receive message instanceof TraceSegment, traceSegmentId is %s", newSegment.getTraceSegmentId());
+//
+//            long minuteSlice = DateTools.getMinuteSlice(newSegment.getStartTime());
+//            long hourSlice = DateTools.getHourSlice(newSegment.getStartTime());
+//            long daySlice = DateTools.getDaySlice(newSegment.getStartTime());
+//            int second = DateTools.getSecond(newSegment.getStartTime());
+//            logger.debug("minuteSlice: %s, hourSlice: %s, daySlice: %s, second:%s", minuteSlice, hourSlice, daySlice, second);
+//
+//            SegmentWithTimeSlice segmentWithTimeSlice = new SegmentWithTimeSlice(newSegment, minuteSlice, hourSlice, daySlice, second);
+//            String newSegmentJsonStr = gson.toJson(newSegment);
+//            tellSegmentSave(newSegmentJsonStr, daySlice, hourSlice, minuteSlice);
+
+//            getSelfContext().lookup(SegmentCostSave.Role.INSTANCE).tell(segmentWithTimeSlice);
+//            getSelfContext().lookup(GlobalTraceAnalysis.Role.INSTANCE).tell(segmentWithTimeSlice);
+//            getSelfContext().lookup(SegmentExceptionSave.Role.INSTANCE).tell(segmentWithTimeSlice);
+//
+//            getSelfContext().lookup(NodeCompAnalysis.Role.INSTANCE).tell(segmentWithTimeSlice);
+//
+//            tellNodeRef(segmentWithTimeSlice);
+//            tellNodeMapping(segmentWithTimeSlice);
+//        }
     }
 
     private void tellSegmentSave(String newSegmentJsonStr, long day, long hour, long minute) throws Exception {

@@ -36,6 +36,7 @@ public abstract class AbstractIndex {
                 .startObject()
                 .field("index.number_of_shards", EsConfig.Es.Index.Shards.number)
                 .field("index.number_of_replicas", EsConfig.Es.Index.Replicas.number)
+                .field("index.refresh_interval", "30s")
                 .endObject();
     }
 

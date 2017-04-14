@@ -6,11 +6,11 @@ import com.a.eye.skywalking.collector.actor.selector.WorkerSelector;
 import com.a.eye.skywalking.collector.worker.segment.SegmentCostIndex;
 import com.a.eye.skywalking.collector.worker.segment.SegmentExceptionIndex;
 import com.a.eye.skywalking.collector.worker.segment.SegmentIndex;
+import com.a.eye.skywalking.collector.worker.segment.logic.GlobalTraceId;
 import com.a.eye.skywalking.collector.worker.segment.logic.Segment;
 import com.a.eye.skywalking.collector.worker.segment.logic.SegmentDeserialize;
 import com.a.eye.skywalking.collector.worker.storage.EsClient;
 import com.a.eye.skywalking.collector.worker.tools.CollectionTools;
-import com.a.eye.skywalking.trace.TraceId.DistributedTraceId;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -88,11 +88,11 @@ public class SegmentTopSearchWithTimeSlice extends AbstractLocalSyncWorker {
 
                 String segmentSource = EsClient.INSTANCE.getClient().prepareGet(SegmentIndex.Index, SegmentIndex.Type_Record, segId).get().getSourceAsString();
                 Segment segment = SegmentDeserialize.INSTANCE.deserializeFromES(segmentSource);
-                List<DistributedTraceId> distributedTraceIdList = segment.getRelatedGlobalTraces();
+                List<GlobalTraceId> distributedTraceIdList = segment.getRelatedGlobalTraces();
 
                 JsonArray distributedTraceIdArray = new JsonArray();
                 if (CollectionTools.isNotEmpty(distributedTraceIdList)) {
-                    for (DistributedTraceId distributedTraceId : distributedTraceIdList) {
+                    for (GlobalTraceId distributedTraceId : distributedTraceIdList) {
                         distributedTraceIdArray.add(distributedTraceId.get());
                     }
                 }
