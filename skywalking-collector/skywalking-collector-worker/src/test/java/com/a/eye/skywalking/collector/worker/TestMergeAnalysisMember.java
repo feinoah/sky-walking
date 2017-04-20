@@ -25,7 +25,7 @@ public class TestMergeAnalysisMember extends MergeAnalysisMember {
     }
 
     @Override
-    protected void aggregation() throws Exception {
+    protected void aggregation() {
 
     }
 

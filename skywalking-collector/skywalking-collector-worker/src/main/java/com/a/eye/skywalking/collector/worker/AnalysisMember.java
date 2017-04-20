@@ -2,6 +2,7 @@ package com.a.eye.skywalking.collector.worker;
 
 import com.a.eye.skywalking.collector.actor.*;
 import com.a.eye.skywalking.collector.queue.EndOfBatchCommand;
+import com.a.eye.skywalking.collector.worker.config.CacheSizeConfig;
 
 /**
  * @author pengys5
@@ -19,18 +20,26 @@ public abstract class AnalysisMember extends AbstractLocalAsyncWorker {
         super.preStart();
     }
 
+    private int messageNum;
+
     @Override
     final public void onWork(Object message) throws Exception {
         if (message instanceof EndOfBatchCommand) {
             aggregation();
         } else {
+            messageNum++;
             try {
                 analyse(message);
             } catch (Exception e) {
                 saveException(e);
             }
+
+            if (messageNum >= CacheSizeConfig.Cache.Analysis.size) {
+                aggregation();
+                messageNum = 0;
+            }
         }
     }
 
-    protected abstract void aggregation() throws Exception;
+    protected abstract void aggregation();
 }

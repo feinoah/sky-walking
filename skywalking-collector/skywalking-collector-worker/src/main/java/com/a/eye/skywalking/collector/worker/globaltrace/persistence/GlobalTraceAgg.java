@@ -34,8 +34,6 @@ public class GlobalTraceAgg extends AbstractClusterWorker {
     }
 
     public static class Factory extends AbstractClusterWorkerProvider<GlobalTraceAgg> {
-        public static Factory INSTANCE = new Factory();
-
         @Override
         public Role role() {
             return Role.INSTANCE;

@@ -46,11 +46,8 @@ public class NodeMappingHourSaveTestCase {
 
     @Test
     public void testFactory() {
-        Assert.assertEquals(NodeMappingHourSave.class.getSimpleName(), NodeMappingHourSave.Factory.INSTANCE.role().roleName());
-        Assert.assertEquals(NodeMappingHourSave.class.getSimpleName(), NodeMappingHourSave.Factory.INSTANCE.workerInstance(null).getClass().getSimpleName());
-
-        int testSize = 10;
-        WorkerConfig.Queue.Node.NodeMappingHourSave.Size = testSize;
-        Assert.assertEquals(testSize, NodeMappingHourSave.Factory.INSTANCE.queueSize());
+        NodeMappingHourSave.Factory factory = new NodeMappingHourSave.Factory();
+        Assert.assertEquals(NodeMappingHourSave.class.getSimpleName(), factory.role().roleName());
+        Assert.assertEquals(NodeMappingHourSave.class.getSimpleName(), factory.workerInstance(null).getClass().getSimpleName());
     }
 }

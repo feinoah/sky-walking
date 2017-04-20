@@ -3,37 +3,25 @@ package com.a.eye.skywalking.collector.worker;
 import com.a.eye.skywalking.collector.actor.ClusterWorkerContext;
 import com.a.eye.skywalking.collector.actor.LocalWorkerContext;
 import com.a.eye.skywalking.collector.actor.Role;
-import com.a.eye.skywalking.collector.worker.config.CacheSizeConfig;
-import com.a.eye.skywalking.collector.worker.storage.MergeData;
-import com.a.eye.skywalking.collector.worker.storage.MergePersistenceData;
+import com.a.eye.skywalking.collector.worker.storage.MergeAnalysisData;
 
 /**
  * @author pengys5
  */
 public abstract class MergeAnalysisMember extends AnalysisMember {
 
-    private MergePersistenceData persistenceData;
+    private MergeAnalysisData mergeAnalysisData;
 
     protected MergeAnalysisMember(Role role, ClusterWorkerContext clusterContext, LocalWorkerContext selfContext) {
         super(role, clusterContext, selfContext);
-        persistenceData = new MergePersistenceData();
+        mergeAnalysisData = new MergeAnalysisData();
     }
 
-    private MergePersistenceData getPersistenceData() {
-        return persistenceData;
+    protected MergeAnalysisData getMergeAnalysisData() {
+        return mergeAnalysisData;
     }
 
     final protected void setMergeData(String id, String column, String value) throws Exception {
-        getPersistenceData().getElseCreate(id).setMergeData(column, value);
-        if (getPersistenceData().size() >= CacheSizeConfig.Cache.Analysis.size) {
-            aggregation();
-        }
-    }
-
-    final public MergeData pushOne() {
-        if (getPersistenceData().iterator().hasNext()) {
-            return getPersistenceData().pushOne();
-        }
-        return null;
+        getMergeAnalysisData().getElseCreate(id).setMergeData(column, value);
     }
 }

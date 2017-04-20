@@ -1,4 +1,4 @@
-package com.a.eye.skywalking.collector.worker.segment.logic;
+package com.a.eye.skywalking.collector.worker.segment.entity;
 
 import com.google.gson.stream.JsonReader;
 
@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * @author pengys5
  */
-public class TraceSegmentRef extends DeserializeObject{
+public class TraceSegmentRef extends DeserializeObject {
 
     private String traceSegmentId;
 

@@ -1,19 +1,29 @@
 package com.a.eye.skywalking.collector.worker;
 
 import com.a.eye.skywalking.collector.actor.*;
-import com.a.eye.skywalking.collector.queue.EndOfBatchCommand;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.a.eye.skywalking.collector.worker.storage.FlushAndSwitch;
+import com.a.eye.skywalking.collector.worker.storage.Window;
+import org.elasticsearch.action.index.IndexRequestBuilder;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author pengys5
  */
-public abstract class PersistenceMember extends AbstractLocalAsyncWorker {
+public abstract class PersistenceMember<T extends Window> extends AbstractLocalSyncWorker {
 
-    private Logger logger = LogManager.getFormatterLogger(PersistenceMember.class);
-
-    public PersistenceMember(Role role, ClusterWorkerContext clusterContext, LocalWorkerContext selfContext) {
+    PersistenceMember(Role role, ClusterWorkerContext clusterContext, LocalWorkerContext selfContext) {
         super(role, clusterContext, selfContext);
+        persistenceData = initializeData();
+    }
+
+    private T persistenceData;
+
+    public abstract T initializeData();
+
+    protected T getPersistenceData() {
+        return persistenceData;
     }
 
     public abstract String esIndex();
@@ -28,13 +38,19 @@ public abstract class PersistenceMember extends AbstractLocalAsyncWorker {
     }
 
     @Override
-    final protected void onWork(Object message) throws Exception {
-        if (message instanceof EndOfBatchCommand) {
-            persistence();
+    protected void onWork(Object request, Object response) throws Exception {
+        if (request instanceof FlushAndSwitch) {
+            persistenceData.switchPointer();
+            while (persistenceData.getLast().isHolding()) {
+                Thread.sleep(10);
+            }
+
+            List<IndexRequestBuilder> builderList = (LinkedList) response;
+            prepareIndex(builderList);
         } else {
-            analyse(message);
+            analyse(request);
         }
     }
 
-    protected abstract void persistence();
+    abstract void prepareIndex(List<IndexRequestBuilder> builderList);
 }

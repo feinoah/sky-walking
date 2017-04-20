@@ -5,8 +5,9 @@ import com.a.eye.skywalking.collector.worker.config.HttpConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+
+import java.net.InetSocketAddress;
 
 /**
  * @author pengys5
@@ -17,14 +18,7 @@ public enum HttpServer {
     private Logger logger = LogManager.getFormatterLogger(HttpServer.class);
 
     public void boot(ClusterWorkerContext clusterContext) throws Exception {
-        Server server = new Server();
-
-        ServerConnector http = new ServerConnector(server);
-        http.setHost(HttpConfig.Http.hostname);
-        http.setPort(Integer.valueOf(HttpConfig.Http.port));
-        http.setIdleTimeout(3000);
-
-        server.addConnector(http);
+        Server server = new Server(new InetSocketAddress(HttpConfig.Http.hostname, Integer.valueOf(HttpConfig.Http.port)));
 
         String contextPath = HttpConfig.Http.contextPath;
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);

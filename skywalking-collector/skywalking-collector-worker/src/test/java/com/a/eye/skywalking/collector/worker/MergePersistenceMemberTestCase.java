@@ -42,7 +42,7 @@ public class MergePersistenceMemberTestCase {
         MergeData mergeData = mock(MergeData.class);
 
         when(mergePersistenceMember, "getPersistenceData").thenReturn(persistenceData);
-        when(persistenceData.getElseCreate(Mockito.anyString())).thenReturn(mergeData);
+        when(persistenceData.getElseCreate(Mockito.anyString(), false)).thenReturn(mergeData);
 
         doCallRealMethod().when(mergePersistenceMember).analyse(Mockito.any(MergeData.class));
     }
@@ -50,7 +50,7 @@ public class MergePersistenceMemberTestCase {
     @Test
     public void testAnalyse() throws Exception {
         String id = "2016" + Const.ID_SPLIT + "A" + Const.ID_SPLIT + "B";
-        MergeData mergeData = new MergeData(id);
+        MergeData mergeData = new MergeData(id, false);
         mergeData.setMergeData("Column", "Value");
 
 //        mergePersistenceMember.analyse(mergeData);

@@ -30,8 +30,6 @@ public class NodeMappingDayAgg extends AbstractClusterWorker {
     }
 
     public static class Factory extends AbstractClusterWorkerProvider<NodeMappingDayAgg> {
-        public static Factory INSTANCE = new Factory();
-
         @Override
         public Role role() {
             return Role.INSTANCE;

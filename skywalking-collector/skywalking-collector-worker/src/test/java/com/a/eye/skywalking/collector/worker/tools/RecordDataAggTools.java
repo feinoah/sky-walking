@@ -14,7 +14,7 @@ public enum RecordDataAggTools {
 
     public void testOnWork(AbstractClusterWorker agg, RecordDataAnswer recordDataAnswer) throws Exception {
         String id = "2016" + Const.ID_SPLIT + "A" + Const.ID_SPLIT + "B";
-        RecordData recordData = new RecordData(id);
+        RecordData recordData = new RecordData(id, false);
         agg.allocateJob(recordData);
         RecordData result = RecordDataTool.INSTANCE.getRecord(recordDataAnswer.getRecordDataList(), id);
         Assert.assertEquals("A" + Const.ID_SPLIT + "B", result.getRecord().get("aggId").getAsString());

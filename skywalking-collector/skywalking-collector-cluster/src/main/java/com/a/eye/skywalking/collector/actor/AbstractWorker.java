@@ -35,6 +35,6 @@ public abstract class AbstractWorker {
     }
 
     final protected void saveException(Exception e) {
-//        e.printStackTrace();
+        e.printStackTrace();
     }
 }

@@ -6,7 +6,7 @@ import com.a.eye.skywalking.collector.actor.selector.RollingSelector;
 import com.a.eye.skywalking.collector.actor.selector.WorkerSelector;
 import com.a.eye.skywalking.collector.worker.globaltrace.GlobalTraceIndex;
 import com.a.eye.skywalking.collector.worker.segment.SegmentIndex;
-import com.a.eye.skywalking.collector.worker.segment.logic.*;
+import com.a.eye.skywalking.collector.worker.segment.entity.*;
 import com.a.eye.skywalking.collector.worker.storage.GetResponseFromEs;
 import com.a.eye.skywalking.collector.worker.storage.MergeData;
 import com.a.eye.skywalking.collector.worker.tools.CollectionTools;
@@ -152,8 +152,6 @@ public class GlobalTraceSearchWithGlobalId extends AbstractLocalSyncWorker {
     }
 
     public static class Factory extends AbstractLocalSyncWorkerProvider<GlobalTraceSearchWithGlobalId> {
-        public static Factory INSTANCE = new Factory();
-
         @Override
         public Role role() {
             return WorkerRole.INSTANCE;

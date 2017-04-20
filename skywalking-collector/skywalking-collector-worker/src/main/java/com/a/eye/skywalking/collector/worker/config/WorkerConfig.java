@@ -8,51 +8,51 @@ public class WorkerConfig {
     public static class WorkerNum {
         public static class Node {
             public static class NodeCompAgg {
-                public static int Value = 10;
+                public static int Value = 1;
             }
 
             public static class NodeMappingDayAgg {
-                public static int Value = 10;
+                public static int Value = 1;
             }
 
             public static class NodeMappingHourAgg {
-                public static int Value = 10;
+                public static int Value = 1;
             }
 
             public static class NodeMappingMinuteAgg {
-                public static int Value = 10;
+                public static int Value = 1;
             }
         }
 
         public static class NodeRef {
             public static class NodeRefDayAgg {
-                public static int Value = 10;
+                public static int Value = 1;
             }
 
             public static class NodeRefHourAgg {
-                public static int Value = 10;
+                public static int Value = 1;
             }
 
             public static class NodeRefMinuteAgg {
-                public static int Value = 10;
+                public static int Value = 1;
             }
 
             public static class NodeRefResSumDayAgg {
-                public static int Value = 10;
+                public static int Value = 1;
             }
 
             public static class NodeRefResSumHourAgg {
-                public static int Value = 10;
+                public static int Value = 1;
             }
 
             public static class NodeRefResSumMinuteAgg {
-                public static int Value = 10;
+                public static int Value = 1;
             }
         }
 
         public static class GlobalTrace {
             public static class GlobalTraceAgg {
-                public static int Value = 10;
+                public static int Value = 1;
             }
         }
     }
@@ -84,6 +84,18 @@ public class WorkerConfig {
             public static class SegmentExceptionSave {
                 public static int Size = 1024;
             }
+
+            public static class SegmentAnalysis {
+                public static int Size = 1024;
+            }
+
+            public static class SegmentCostAnalysis {
+                public static int Size = 1024;
+            }
+
+            public static class SegmentExceptionAnalysis {
+                public static int Size = 1024;
+            }
         }
 
         public static class Node {
@@ -104,10 +116,6 @@ public class WorkerConfig {
             }
 
             public static class NodeCompSave {
-                public static int Size = 1024;
-            }
-
-            public static class NodeMappingDaySave {
                 public static int Size = 1024;
             }
 

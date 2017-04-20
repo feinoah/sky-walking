@@ -1,4 +1,4 @@
-package com.a.eye.skywalking.collector.worker.segment.logic;
+package com.a.eye.skywalking.collector.worker.segment.entity;
 
 import java.util.List;
 import java.util.Map;
@@ -43,7 +43,28 @@ public enum JsonBuilder {
         builder.append("]");
     }
 
-    public void append(StringBuilder builder, String name, Map<String, String> tagsWithStr, boolean first) {
+    public void append(StringBuilder builder, String name, Map<String, ?> tagsWithStr, boolean first) {
+        if (!first) {
+            builder.append(",");
+        }
+        builder.append("\"").append(name).append("\":");
+        builder.append("{");
 
+        boolean isFirst = true;
+        for (Map.Entry<String, ?> entry : tagsWithStr.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (!isFirst) {
+                builder.append(",");
+            }
+            if (value instanceof String) {
+                builder.append("\"").append(key).append("\":\"").append(value).append("\"");
+            } else {
+                builder.append("\"").append(key).append("\":").append(value);
+            }
+            isFirst = false;
+        }
+
+        builder.append("}");
     }
 }

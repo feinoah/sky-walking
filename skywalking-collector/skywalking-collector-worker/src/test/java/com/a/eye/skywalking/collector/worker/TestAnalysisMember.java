@@ -24,7 +24,7 @@ public class TestAnalysisMember extends AnalysisMember {
     }
 
     @Override
-    protected void aggregation() throws Exception {
+    protected void aggregation(){
 
     }
 

@@ -28,8 +28,6 @@ public class NodeCompAgg extends AbstractClusterWorker {
     }
 
     public static class Factory extends AbstractClusterWorkerProvider<NodeCompAgg> {
-        public static Factory INSTANCE = new Factory();
-
         @Override
         public Role role() {
             return Role.INSTANCE;

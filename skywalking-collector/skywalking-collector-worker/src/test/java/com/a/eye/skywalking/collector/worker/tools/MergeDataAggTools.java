@@ -14,7 +14,7 @@ public enum MergeDataAggTools {
 
     public void testOnWork(AbstractClusterWorker agg, MergeDataAnswer mergeDataAnswer) throws Exception {
         String id = "2016" + Const.ID_SPLIT + "A" + Const.ID_SPLIT + "B";
-        MergeData mergeData = new MergeData(id);
+        MergeData mergeData = new MergeData(id, false);
         mergeData.setMergeData("Column", "Value");
         agg.allocateJob(mergeData);
         Assert.assertEquals("Value", mergeDataAnswer.getMergeDataList().get(0).toMap().get("Column"));

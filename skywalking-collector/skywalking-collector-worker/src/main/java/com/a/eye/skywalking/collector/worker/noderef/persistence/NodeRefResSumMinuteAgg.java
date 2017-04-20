@@ -34,8 +34,6 @@ public class NodeRefResSumMinuteAgg extends AbstractClusterWorker {
     }
 
     public static class Factory extends AbstractClusterWorkerProvider<NodeRefResSumMinuteAgg> {
-        public static Factory INSTANCE = new Factory();
-
         @Override
         public Role role() {
             return Role.INSTANCE;

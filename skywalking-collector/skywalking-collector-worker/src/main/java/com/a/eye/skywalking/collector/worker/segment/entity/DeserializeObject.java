@@ -1,4 +1,4 @@
-package com.a.eye.skywalking.collector.worker.segment.logic;
+package com.a.eye.skywalking.collector.worker.segment.entity;
 
 /**
  * @author pengys5

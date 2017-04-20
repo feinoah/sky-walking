@@ -4,7 +4,6 @@ import com.a.eye.skywalking.collector.actor.ClusterWorkerContext;
 import com.a.eye.skywalking.collector.actor.LocalWorkerContext;
 import com.a.eye.skywalking.collector.actor.selector.RollingSelector;
 import com.a.eye.skywalking.collector.worker.config.CacheSizeConfig;
-import com.a.eye.skywalking.collector.worker.config.WorkerConfig;
 import com.a.eye.skywalking.collector.worker.mock.MockEsBulkClient;
 import com.a.eye.skywalking.collector.worker.segment.SegmentExceptionIndex;
 import com.a.eye.skywalking.collector.worker.segment.SegmentPost;
@@ -81,12 +80,9 @@ public class SegmentExceptionSaveTestCase {
 
     @Test
     public void testFactory() {
-        Assert.assertEquals(SegmentExceptionSave.class.getSimpleName(), SegmentExceptionSave.Factory.INSTANCE.role().roleName());
-        Assert.assertEquals(SegmentExceptionSave.class.getSimpleName(), SegmentExceptionSave.Factory.INSTANCE.workerInstance(null).getClass().getSimpleName());
-
-        int testSize = 10;
-        WorkerConfig.Queue.Segment.SegmentExceptionSave.Size = testSize;
-        Assert.assertEquals(testSize, SegmentExceptionSave.Factory.INSTANCE.queueSize());
+        SegmentExceptionSave.Factory factory = new SegmentExceptionSave.Factory();
+        Assert.assertEquals(SegmentExceptionSave.class.getSimpleName(), factory.role().roleName());
+        Assert.assertEquals(SegmentExceptionSave.class.getSimpleName(), factory.workerInstance(null).getClass().getSimpleName());
     }
 
     @Test

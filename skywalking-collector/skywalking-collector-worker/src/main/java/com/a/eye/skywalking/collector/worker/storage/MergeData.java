@@ -13,15 +13,22 @@ public class MergeData extends AbstractHashMessage {
 
     private String id;
 
+    private boolean isDBValue;
+
     private Map<String, Set<String>> mergeData = new HashMap<>();
 
-    public MergeData(String key) {
+    public MergeData(String key, boolean isDBValue) {
         super(key);
         this.id = key;
+        this.isDBValue = isDBValue;
     }
 
     public String getId() {
         return id;
+    }
+
+    public boolean isDBValue() {
+        return isDBValue;
     }
 
     public void setMergeData(String column, String value) {

@@ -62,17 +62,18 @@ public class NodeCompAggTestCase {
 
     @Test
     public void testFactory() {
-        Assert.assertEquals(NodeCompAgg.class.getSimpleName(), NodeCompAgg.Factory.INSTANCE.role().roleName());
-        Assert.assertEquals(NodeCompAgg.class.getSimpleName(), NodeCompAgg.Factory.INSTANCE.workerInstance(null).getClass().getSimpleName());
+        NodeCompAgg.Factory factory = new NodeCompAgg.Factory();
+        Assert.assertEquals(NodeCompAgg.class.getSimpleName(), factory.role().roleName());
+        Assert.assertEquals(NodeCompAgg.class.getSimpleName(), factory.workerInstance(null).getClass().getSimpleName());
 
         int testSize = 10;
         WorkerConfig.WorkerNum.Node.NodeCompAgg.Value = testSize;
-        Assert.assertEquals(testSize, NodeCompAgg.Factory.INSTANCE.workerNum());
+        Assert.assertEquals(testSize, factory.workerNum());
     }
 
     @Test
     public void testPreStart() throws ProviderNotFoundException {
-        when(clusterWorkerContext.findProvider(NodeCompSave.Role.INSTANCE)).thenReturn(NodeCompSave.Factory.INSTANCE);
+        when(clusterWorkerContext.findProvider(NodeCompSave.Role.INSTANCE)).thenReturn(new NodeCompSave.Factory());
 
         ArgumentCaptor<NodeCompSave.Role> argumentCaptor = ArgumentCaptor.forClass(NodeCompSave.Role.class);
         agg.preStart();

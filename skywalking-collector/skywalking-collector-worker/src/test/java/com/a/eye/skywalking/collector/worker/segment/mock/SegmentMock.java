@@ -3,6 +3,7 @@ package com.a.eye.skywalking.collector.worker.segment.mock;
 import com.a.eye.skywalking.collector.queue.EndOfBatchCommand;
 import com.a.eye.skywalking.collector.worker.AnalysisMember;
 import com.a.eye.skywalking.collector.worker.segment.SegmentPost;
+import com.a.eye.skywalking.collector.worker.segment.entity.Segment;
 import com.a.eye.skywalking.collector.worker.tools.DateTools;
 import com.a.eye.skywalking.collector.worker.tools.JsonFileReader;
 import com.a.eye.skywalking.trace.SegmentsMessage;
@@ -104,13 +105,13 @@ public class SegmentMock {
 
         List<SegmentPost.SegmentWithTimeSlice> segmentWithTimeSliceList = new ArrayList<>();
         for (TraceSegment newSegment : segmentList) {
-            SegmentPost.SegmentWithTimeSlice segmentWithTimeSlice = createSegmentWithTimeSlice(newSegment);
-            segmentWithTimeSliceList.add(segmentWithTimeSlice);
+//            SegmentPost.SegmentWithTimeSlice segmentWithTimeSlice = createSegmentWithTimeSlice(newSegment);
+//            segmentWithTimeSliceList.add(segmentWithTimeSlice);
         }
         return segmentWithTimeSliceList;
     }
 
-    private SegmentPost.SegmentWithTimeSlice createSegmentWithTimeSlice(TraceSegment newSegment) {
+    private SegmentPost.SegmentWithTimeSlice createSegmentWithTimeSlice(Segment newSegment) {
         long minuteSlice = DateTools.getMinuteSlice(newSegment.getStartTime());
         long hourSlice = DateTools.getHourSlice(newSegment.getStartTime());
         long daySlice = DateTools.getDaySlice(newSegment.getStartTime());

@@ -14,7 +14,7 @@ public enum MetricDataAggTools {
 
     public void testOnWork(AbstractClusterWorker agg, MetricDataAnswer metricDataAnswer) throws Exception {
         String id = "2016" + Const.ID_SPLIT + "A" + Const.ID_SPLIT + "B";
-        MetricData metricData = new MetricData(id);
+        MetricData metricData = new MetricData(id, false);
         agg.allocateJob(metricData);
         Assert.assertEquals("A" + Const.ID_SPLIT + "B", metricDataAnswer.getMetricDataList().get(0).toMap().get("aggId"));
     }

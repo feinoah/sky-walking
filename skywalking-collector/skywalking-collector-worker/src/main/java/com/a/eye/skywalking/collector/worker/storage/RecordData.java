@@ -11,11 +11,13 @@ public class RecordData extends AbstractHashMessage {
 
     private String id;
     private String aggId;
+    private boolean isDBValue;
     private JsonObject record;
 
-    public RecordData(String key) {
+    public RecordData(String key, boolean isDBValue) {
         super(key);
         this.id = key;
+        this.isDBValue = isDBValue;
         String[] ids = id.split(Const.IDS_SPLIT);
         for (int i = 1; i < ids.length; i++) {
             if (i == 1) {
@@ -29,6 +31,10 @@ public class RecordData extends AbstractHashMessage {
 
     public String getId() {
         return id;
+    }
+
+    public boolean isDBValue() {
+        return isDBValue;
     }
 
     public JsonObject getRecord() {

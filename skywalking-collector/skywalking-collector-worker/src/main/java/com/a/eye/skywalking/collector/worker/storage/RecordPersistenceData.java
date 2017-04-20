@@ -1,55 +1,25 @@
 package com.a.eye.skywalking.collector.worker.storage;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Spliterator;
-import java.util.function.Consumer;
-
 /**
  * @author pengys5
  */
-public class RecordPersistenceData implements Iterable {
+public class RecordPersistenceData extends Window<RecordData> implements PersistenceData<RecordData> {
 
-    private Map<String, RecordData> persistenceData = new HashMap<>();
+    private Data<RecordData> lockedData;
 
-    public RecordData getElseCreate(String id) {
-        if (!persistenceData.containsKey(id)) {
-            persistenceData.put(id, new RecordData(id));
+    public RecordData getElseCreate(String id, boolean isDBValue) {
+        if (!lockedData.containsKey(id)) {
+            lockedData.put(id, new RecordData(id, isDBValue));
         }
-        return persistenceData.get(id);
+        return lockedData.get(id);
     }
 
-    public int size() {
-        return persistenceData.size();
+    public void holdData() {
+        lockedData = getCurrentAndHold();
     }
 
-    public void clear() {
-        persistenceData.clear();
-    }
-
-    public boolean hasNext() {
-        return persistenceData.entrySet().iterator().hasNext();
-    }
-
-    public RecordData pushOne() {
-        RecordData one = persistenceData.entrySet().iterator().next().getValue();
-        persistenceData.remove(one.getId());
-        return one;
-    }
-
-    @Override
-    public void forEach(Consumer action) {
-        throw new UnsupportedOperationException("forEach");
-    }
-
-    @Override
-    public Spliterator spliterator() {
-        throw new UnsupportedOperationException("spliterator");
-    }
-
-    @Override
-    public Iterator<Map.Entry<String, RecordData>> iterator() {
-        return persistenceData.entrySet().iterator();
+    public void releaseData() {
+        lockedData.release();
+        lockedData = null;
     }
 }

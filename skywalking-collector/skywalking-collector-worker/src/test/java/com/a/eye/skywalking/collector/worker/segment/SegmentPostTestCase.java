@@ -83,38 +83,39 @@ public class SegmentPostTestCase {
 
     @Test
     public void testFactory() {
-        Assert.assertEquals(SegmentPost.class.getSimpleName(), SegmentPost.Factory.INSTANCE.role().roleName());
-        Assert.assertEquals(SegmentPost.class.getSimpleName(), SegmentPost.Factory.INSTANCE.workerInstance(null).getClass().getSimpleName());
-        Assert.assertEquals("/segments", SegmentPost.Factory.INSTANCE.servletPath());
+        SegmentPost.Factory factory = new SegmentPost.Factory();
+        Assert.assertEquals(SegmentPost.class.getSimpleName(), factory.role().roleName());
+        Assert.assertEquals(SegmentPost.class.getSimpleName(), factory.workerInstance(null).getClass().getSimpleName());
+        Assert.assertEquals("/segments", factory.servletPath());
 
         int testSize = 10;
         WorkerConfig.Queue.Segment.SegmentPost.Size = testSize;
-        Assert.assertEquals(testSize, SegmentPost.Factory.INSTANCE.queueSize());
+        Assert.assertEquals(testSize, factory.queueSize());
     }
 
     @Test
     public void testPreStart() throws ProviderNotFoundException {
-        when(clusterWorkerContext.findProvider(GlobalTraceAnalysis.Role.INSTANCE)).thenReturn(GlobalTraceAnalysis.Factory.INSTANCE);
-        when(clusterWorkerContext.findProvider(NodeCompAnalysis.Role.INSTANCE)).thenReturn(NodeCompAnalysis.Factory.INSTANCE);
-        when(clusterWorkerContext.findProvider(SegmentSave.Role.INSTANCE)).thenReturn(SegmentSave.Factory.INSTANCE);
-        when(clusterWorkerContext.findProvider(SegmentCostSave.Role.INSTANCE)).thenReturn(SegmentCostSave.Factory.INSTANCE);
-        when(clusterWorkerContext.findProvider(SegmentExceptionSave.Role.INSTANCE)).thenReturn(SegmentExceptionSave.Factory.INSTANCE);
-
-        NodeRefMinuteAnalysis.Factory.INSTANCE.setClusterContext(clusterWorkerContext);
-        when(clusterWorkerContext.findProvider(NodeRefResSumMinuteAnalysis.Role.INSTANCE)).thenReturn(NodeRefResSumMinuteAnalysis.Factory.INSTANCE);
-        when(clusterWorkerContext.findProvider(NodeRefMinuteAnalysis.Role.INSTANCE)).thenReturn(NodeRefMinuteAnalysis.Factory.INSTANCE);
-
-        NodeRefHourAnalysis.Factory.INSTANCE.setClusterContext(clusterWorkerContext);
-        when(clusterWorkerContext.findProvider(NodeRefResSumHourAnalysis.Role.INSTANCE)).thenReturn(NodeRefResSumHourAnalysis.Factory.INSTANCE);
-        when(clusterWorkerContext.findProvider(NodeRefHourAnalysis.Role.INSTANCE)).thenReturn(NodeRefHourAnalysis.Factory.INSTANCE);
-
-        NodeRefDayAnalysis.Factory.INSTANCE.setClusterContext(clusterWorkerContext);
-        when(clusterWorkerContext.findProvider(NodeRefResSumDayAnalysis.Role.INSTANCE)).thenReturn(NodeRefResSumDayAnalysis.Factory.INSTANCE);
-        when(clusterWorkerContext.findProvider(NodeRefDayAnalysis.Role.INSTANCE)).thenReturn(NodeRefDayAnalysis.Factory.INSTANCE);
-
-        when(clusterWorkerContext.findProvider(NodeMappingDayAnalysis.Role.INSTANCE)).thenReturn(NodeMappingDayAnalysis.Factory.INSTANCE);
-        when(clusterWorkerContext.findProvider(NodeMappingHourAnalysis.Role.INSTANCE)).thenReturn(NodeMappingHourAnalysis.Factory.INSTANCE);
-        when(clusterWorkerContext.findProvider(NodeMappingMinuteAnalysis.Role.INSTANCE)).thenReturn(NodeMappingMinuteAnalysis.Factory.INSTANCE);
+//        when(clusterWorkerContext.findProvider(GlobalTraceAnalysis.Role.INSTANCE)).thenReturn(new GlobalTraceAnalysis.Factory());
+//        when(clusterWorkerContext.findProvider(NodeCompAnalysis.Role.INSTANCE)).thenReturn(new NodeCompAnalysis.Factory());
+//        when(clusterWorkerContext.findProvider(SegmentSave.Role.INSTANCE)).thenReturn(SegmentSave.Factory.INSTANCE);
+//        when(clusterWorkerContext.findProvider(SegmentCostSave.Role.INSTANCE)).thenReturn(SegmentCostSave.Factory.INSTANCE);
+//        when(clusterWorkerContext.findProvider(SegmentExceptionSave.Role.INSTANCE)).thenReturn(SegmentExceptionSave.Factory.INSTANCE);
+//
+//        NodeRefMinuteAnalysis.Factory.INSTANCE.setClusterContext(clusterWorkerContext);
+//        when(clusterWorkerContext.findProvider(NodeRefResSumMinuteAnalysis.Role.INSTANCE)).thenReturn(NodeRefResSumMinuteAnalysis.Factory.INSTANCE);
+//        when(clusterWorkerContext.findProvider(NodeRefMinuteAnalysis.Role.INSTANCE)).thenReturn(NodeRefMinuteAnalysis.Factory.INSTANCE);
+//
+//        NodeRefHourAnalysis.Factory.INSTANCE.setClusterContext(clusterWorkerContext);
+//        when(clusterWorkerContext.findProvider(NodeRefResSumHourAnalysis.Role.INSTANCE)).thenReturn(NodeRefResSumHourAnalysis.Factory.INSTANCE);
+//        when(clusterWorkerContext.findProvider(NodeRefHourAnalysis.Role.INSTANCE)).thenReturn(NodeRefHourAnalysis.Factory.INSTANCE);
+//
+//        NodeRefDayAnalysis.Factory.INSTANCE.setClusterContext(clusterWorkerContext);
+//        when(clusterWorkerContext.findProvider(NodeRefResSumDayAnalysis.Role.INSTANCE)).thenReturn(NodeRefResSumDayAnalysis.Factory.INSTANCE);
+//        when(clusterWorkerContext.findProvider(NodeRefDayAnalysis.Role.INSTANCE)).thenReturn(NodeRefDayAnalysis.Factory.INSTANCE);
+//
+//        when(clusterWorkerContext.findProvider(NodeMappingDayAnalysis.Role.INSTANCE)).thenReturn(NodeMappingDayAnalysis.Factory.INSTANCE);
+//        when(clusterWorkerContext.findProvider(NodeMappingHourAnalysis.Role.INSTANCE)).thenReturn(NodeMappingHourAnalysis.Factory.INSTANCE);
+//        when(clusterWorkerContext.findProvider(NodeMappingMinuteAnalysis.Role.INSTANCE)).thenReturn(NodeMappingMinuteAnalysis.Factory.INSTANCE);
 
         ArgumentCaptor<Role> argumentCaptor = ArgumentCaptor.forClass(Role.class);
 

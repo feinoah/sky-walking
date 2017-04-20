@@ -13,10 +13,12 @@ public class MetricData extends AbstractHashMessage {
 
     private String id;
     private Map<String, Object> value;
+    private boolean isDBValue;
 
-    public MetricData(String id) {
+    public MetricData(String id, boolean isDBValue) {
         super(id);
         this.id = id;
+        this.isDBValue = isDBValue;
         value = new HashMap<>();
 
         String[] ids = id.split(Const.IDS_SPLIT);
@@ -32,6 +34,10 @@ public class MetricData extends AbstractHashMessage {
 
         value.put(AbstractIndex.Time_Slice, Long.valueOf(slice));
         value.put(AbstractIndex.AGG_COLUMN, aggId);
+    }
+
+    public boolean isDBValue() {
+        return isDBValue;
     }
 
     public void setMetric(String column, Long value) {
@@ -53,6 +59,7 @@ public class MetricData extends AbstractHashMessage {
     }
 
     public void merge(Map<String, Object> dbData) {
+        this.isDBValue = true;
         for (Map.Entry<String, Object> entry : dbData.entrySet()) {
             if (!AbstractIndex.Time_Slice.equals(entry.getKey())
                     && !AbstractIndex.AGG_COLUMN.equals(entry.getKey())) {

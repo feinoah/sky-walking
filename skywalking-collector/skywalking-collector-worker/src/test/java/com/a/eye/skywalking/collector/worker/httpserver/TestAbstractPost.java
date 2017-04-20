@@ -21,7 +21,7 @@ public class TestAbstractPost extends AbstractPost {
     }
 
     @Override
-    protected void onReceive(String reqJsonStr) throws Exception {
+    protected void onReceive(Object message) throws Exception {
 
     }
 

@@ -61,17 +61,18 @@ public class NodeMappingMinuteAggTestCase {
 
     @Test
     public void testFactory() {
-        Assert.assertEquals(NodeMappingMinuteAgg.class.getSimpleName(), NodeMappingMinuteAgg.Factory.INSTANCE.role().roleName());
-        Assert.assertEquals(NodeMappingMinuteAgg.class.getSimpleName(), NodeMappingMinuteAgg.Factory.INSTANCE.workerInstance(null).getClass().getSimpleName());
+        NodeMappingMinuteAgg.Factory factory = new NodeMappingMinuteAgg.Factory();
+        Assert.assertEquals(NodeMappingMinuteAgg.class.getSimpleName(), factory.role().roleName());
+        Assert.assertEquals(NodeMappingMinuteAgg.class.getSimpleName(), factory.workerInstance(null).getClass().getSimpleName());
 
         int testSize = 10;
         WorkerConfig.WorkerNum.Node.NodeMappingMinuteAgg.Value = testSize;
-        Assert.assertEquals(testSize, NodeMappingMinuteAgg.Factory.INSTANCE.workerNum());
+        Assert.assertEquals(testSize, factory.workerNum());
     }
 
     @Test
     public void testPreStart() throws ProviderNotFoundException {
-        when(clusterWorkerContext.findProvider(NodeMappingMinuteSave.Role.INSTANCE)).thenReturn(NodeMappingMinuteSave.Factory.INSTANCE);
+        when(clusterWorkerContext.findProvider(NodeMappingMinuteSave.Role.INSTANCE)).thenReturn(new NodeMappingMinuteSave.Factory());
 
         ArgumentCaptor<NodeMappingMinuteSave.Role> argumentCaptor = ArgumentCaptor.forClass(NodeMappingMinuteSave.Role.class);
         agg.preStart();

@@ -1,13 +1,13 @@
 package com.a.eye.skywalking.collector.worker.node.persistence;
 
-import com.a.eye.skywalking.collector.actor.AbstractLocalAsyncWorkerProvider;
+import com.a.eye.skywalking.collector.actor.AbstractLocalSyncWorkerProvider;
 import com.a.eye.skywalking.collector.actor.ClusterWorkerContext;
 import com.a.eye.skywalking.collector.actor.LocalWorkerContext;
 import com.a.eye.skywalking.collector.actor.selector.HashCodeSelector;
 import com.a.eye.skywalking.collector.actor.selector.WorkerSelector;
 import com.a.eye.skywalking.collector.worker.RecordPersistenceMember;
-import com.a.eye.skywalking.collector.worker.config.WorkerConfig;
 import com.a.eye.skywalking.collector.worker.node.NodeCompIndex;
+import com.a.eye.skywalking.collector.worker.storage.PersistenceWorkerListener;
 
 /**
  * @author pengys5
@@ -28,9 +28,7 @@ public class NodeCompSave extends RecordPersistenceMember {
         return NodeCompIndex.Type_Record;
     }
 
-    public static class Factory extends AbstractLocalAsyncWorkerProvider<NodeCompSave> {
-        public static Factory INSTANCE = new Factory();
-
+    public static class Factory extends AbstractLocalSyncWorkerProvider<NodeCompSave> {
         @Override
         public Role role() {
             return Role.INSTANCE;
@@ -38,12 +36,9 @@ public class NodeCompSave extends RecordPersistenceMember {
 
         @Override
         public NodeCompSave workerInstance(ClusterWorkerContext clusterContext) {
-            return new NodeCompSave(role(), clusterContext, new LocalWorkerContext());
-        }
-
-        @Override
-        public int queueSize() {
-            return WorkerConfig.Queue.Node.NodeCompSave.Size;
+            NodeCompSave worker = new NodeCompSave(role(), clusterContext, new LocalWorkerContext());
+            PersistenceWorkerListener.INSTANCE.register(worker);
+            return worker;
         }
     }
 

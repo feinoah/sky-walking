@@ -3,9 +3,7 @@ package com.a.eye.skywalking.collector.worker;
 import com.a.eye.skywalking.collector.actor.ClusterWorkerContext;
 import com.a.eye.skywalking.collector.actor.LocalWorkerContext;
 import com.a.eye.skywalking.collector.actor.Role;
-import com.a.eye.skywalking.collector.worker.config.CacheSizeConfig;
-import com.a.eye.skywalking.collector.worker.storage.RecordData;
-import com.a.eye.skywalking.collector.worker.storage.RecordPersistenceData;
+import com.a.eye.skywalking.collector.worker.storage.RecordAnalysisData;
 import com.google.gson.JsonObject;
 
 /**
@@ -13,23 +11,17 @@ import com.google.gson.JsonObject;
  */
 public abstract class RecordAnalysisMember extends AnalysisMember {
 
-    private RecordPersistenceData persistenceData = new RecordPersistenceData();
+    private RecordAnalysisData recordAnalysisData = new RecordAnalysisData();
 
     public RecordAnalysisMember(Role role, ClusterWorkerContext clusterContext, LocalWorkerContext selfContext) {
         super(role, clusterContext, selfContext);
     }
 
     final public void setRecord(String id, JsonObject record) throws Exception {
-        persistenceData.getElseCreate(id).setRecord(record);
-        if (persistenceData.size() >= CacheSizeConfig.Cache.Analysis.size) {
-            aggregation();
-        }
+        getRecordAnalysisData().getElseCreate(id).setRecord(record);
     }
 
-    final public RecordData pushOne() {
-        if (persistenceData.hasNext()) {
-            return persistenceData.pushOne();
-        }
-        return null;
+    final public RecordAnalysisData getRecordAnalysisData() {
+        return recordAnalysisData;
     }
 }

@@ -61,17 +61,19 @@ public class GlobalTraceAggTestCase {
 
     @Test
     public void testFactory() {
-        Assert.assertEquals(GlobalTraceAgg.class.getSimpleName(), GlobalTraceAgg.Factory.INSTANCE.role().roleName());
-        Assert.assertEquals(GlobalTraceAgg.class.getSimpleName(), GlobalTraceAgg.Factory.INSTANCE.workerInstance(null).getClass().getSimpleName());
+        GlobalTraceAgg.Factory factory = new GlobalTraceAgg.Factory();
+        Assert.assertEquals(GlobalTraceAgg.class.getSimpleName(), factory.role().roleName());
+        Assert.assertEquals(GlobalTraceAgg.class.getSimpleName(), factory.workerInstance(null).getClass().getSimpleName());
 
         int testSize = 10;
         WorkerConfig.WorkerNum.GlobalTrace.GlobalTraceAgg.Value = testSize;
-        Assert.assertEquals(testSize, GlobalTraceAgg.Factory.INSTANCE.workerNum());
+        Assert.assertEquals(testSize, factory.workerNum());
     }
 
     @Test
     public void testPreStart() throws ProviderNotFoundException {
-        when(clusterWorkerContext.findProvider(GlobalTraceSave.Role.INSTANCE)).thenReturn(GlobalTraceSave.Factory.INSTANCE);
+        GlobalTraceSave.Factory factory = new GlobalTraceSave.Factory();
+        when(clusterWorkerContext.findProvider(GlobalTraceSave.Role.INSTANCE)).thenReturn(factory);
 
         ArgumentCaptor<GlobalTraceSave.Role> argumentCaptor = ArgumentCaptor.forClass(GlobalTraceSave.Role.class);
         agg.preStart();

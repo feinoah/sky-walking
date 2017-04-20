@@ -14,7 +14,7 @@ public class MergeDataTestCase {
     @Test
     public void testConstruction() {
         String id = "Test";
-        MergeData mergeData = new MergeData(id);
+        MergeData mergeData = new MergeData(id, false);
 
         Assert.assertEquals(id, mergeData.getId());
     }
@@ -22,7 +22,7 @@ public class MergeDataTestCase {
     @Test
     public void testSetMergeData() {
         String id = "Test";
-        MergeData mergeData = new MergeData(id);
+        MergeData mergeData = new MergeData(id, false);
 
         mergeData.setMergeData("Column_1", "Value_1");
         Assert.assertEquals("Value_1", mergeData.toMap().get("Column_1"));
@@ -37,12 +37,12 @@ public class MergeDataTestCase {
     }
 
     @Test
-    public void testMerge(){
+    public void testMerge() {
         String id = "Test";
-        MergeData mergeData_1 = new MergeData(id);
+        MergeData mergeData_1 = new MergeData(id, false);
         mergeData_1.setMergeData("Column_1", "Value_1");
 
-        MergeData mergeData_2 = new MergeData(id);
+        MergeData mergeData_2 = new MergeData(id, false);
         mergeData_2.setMergeData("Column_1", "Value_2");
 
         mergeData_1.merge(mergeData_2);
@@ -50,9 +50,9 @@ public class MergeDataTestCase {
     }
 
     @Test
-    public void testMergeMap(){
+    public void testMergeMap() {
         String id = "Test";
-        MergeData mergeData_1 = new MergeData(id);
+        MergeData mergeData_1 = new MergeData(id, false);
         mergeData_1.setMergeData("Column_1", "Value_1");
 
         Map<String, Object> dbData = new HashMap<>();

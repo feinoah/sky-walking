@@ -5,12 +5,12 @@ import com.a.eye.skywalking.collector.actor.LocalWorkerContext;
 import com.a.eye.skywalking.collector.worker.Const;
 import com.a.eye.skywalking.collector.worker.RecordAnalysisMember;
 import com.a.eye.skywalking.collector.worker.noderef.NodeRefIndex;
+import com.a.eye.skywalking.collector.worker.segment.entity.Segment;
+import com.a.eye.skywalking.collector.worker.segment.entity.Span;
+import com.a.eye.skywalking.collector.worker.segment.entity.tag.Tags;
 import com.a.eye.skywalking.collector.worker.tools.ClientSpanIsLeafTools;
 import com.a.eye.skywalking.collector.worker.tools.CollectionTools;
 import com.a.eye.skywalking.collector.worker.tools.SpanPeersTools;
-import com.a.eye.skywalking.trace.Span;
-import com.a.eye.skywalking.trace.TraceSegment;
-import com.a.eye.skywalking.trace.tag.Tags;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +28,7 @@ abstract class AbstractNodeRefAnalysis extends RecordAnalysisMember {
         super(role, clusterContext, selfContext);
     }
 
-    final void analyseNodeRef(TraceSegment segment, long timeSlice, long minute, long hour, long day, int second) throws Exception {
+    final void analyseNodeRef(Segment segment, long timeSlice, long minute, long hour, long day, int second) throws Exception {
         List<Span> spanList = segment.getSpans();
         if (CollectionTools.isNotEmpty(spanList)) {
             for (Span span : spanList) {

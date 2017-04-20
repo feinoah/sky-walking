@@ -1,13 +1,13 @@
 package com.a.eye.skywalking.collector.worker.noderef.persistence;
 
-import com.a.eye.skywalking.collector.actor.AbstractLocalAsyncWorkerProvider;
+import com.a.eye.skywalking.collector.actor.AbstractLocalSyncWorkerProvider;
 import com.a.eye.skywalking.collector.actor.ClusterWorkerContext;
 import com.a.eye.skywalking.collector.actor.LocalWorkerContext;
 import com.a.eye.skywalking.collector.actor.selector.HashCodeSelector;
 import com.a.eye.skywalking.collector.actor.selector.WorkerSelector;
 import com.a.eye.skywalking.collector.worker.RecordPersistenceMember;
-import com.a.eye.skywalking.collector.worker.config.WorkerConfig;
 import com.a.eye.skywalking.collector.worker.noderef.NodeRefIndex;
+import com.a.eye.skywalking.collector.worker.storage.PersistenceWorkerListener;
 
 /**
  * @author pengys5
@@ -28,10 +28,7 @@ public class NodeRefHourSave extends RecordPersistenceMember {
         return NodeRefIndex.Type_Hour;
     }
 
-    public static class Factory extends AbstractLocalAsyncWorkerProvider<NodeRefHourSave> {
-
-        public static Factory INSTANCE = new Factory();
-
+    public static class Factory extends AbstractLocalSyncWorkerProvider<NodeRefHourSave> {
         @Override
         public Role role() {
             return Role.INSTANCE;
@@ -39,12 +36,9 @@ public class NodeRefHourSave extends RecordPersistenceMember {
 
         @Override
         public NodeRefHourSave workerInstance(ClusterWorkerContext clusterContext) {
-            return new NodeRefHourSave(role(), clusterContext, new LocalWorkerContext());
-        }
-
-        @Override
-        public int queueSize() {
-            return WorkerConfig.Queue.NodeRef.NodeRefHourSave.Size;
+            NodeRefHourSave worker = new NodeRefHourSave(role(), clusterContext, new LocalWorkerContext());
+            PersistenceWorkerListener.INSTANCE.register(worker);
+            return worker;
         }
     }
 

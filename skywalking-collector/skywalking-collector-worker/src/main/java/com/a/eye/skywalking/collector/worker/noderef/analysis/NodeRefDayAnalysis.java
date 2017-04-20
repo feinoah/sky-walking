@@ -1,21 +1,21 @@
 package com.a.eye.skywalking.collector.worker.noderef.analysis;
 
-import com.a.eye.skywalking.collector.actor.AbstractLocalAsyncWorkerProvider;
-import com.a.eye.skywalking.collector.actor.ClusterWorkerContext;
-import com.a.eye.skywalking.collector.actor.LocalWorkerContext;
-import com.a.eye.skywalking.collector.actor.ProviderNotFoundException;
+import com.a.eye.skywalking.collector.actor.*;
 import com.a.eye.skywalking.collector.actor.selector.RollingSelector;
 import com.a.eye.skywalking.collector.actor.selector.WorkerSelector;
 import com.a.eye.skywalking.collector.worker.config.WorkerConfig;
 import com.a.eye.skywalking.collector.worker.noderef.persistence.NodeRefDayAgg;
 import com.a.eye.skywalking.collector.worker.segment.SegmentPost;
-import com.a.eye.skywalking.collector.worker.storage.RecordData;
-import com.a.eye.skywalking.trace.TraceSegment;
+import com.a.eye.skywalking.collector.worker.segment.entity.Segment;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author pengys5
  */
 public class NodeRefDayAnalysis extends AbstractNodeRefAnalysis {
+
+    private Logger logger = LogManager.getFormatterLogger(NodeRefDayAnalysis.class);
 
     protected NodeRefDayAnalysis(com.a.eye.skywalking.collector.actor.Role role, ClusterWorkerContext clusterContext, LocalWorkerContext selfContext) {
         super(role, clusterContext, selfContext);
@@ -31,7 +31,7 @@ public class NodeRefDayAnalysis extends AbstractNodeRefAnalysis {
     public void analyse(Object message) throws Exception {
         if (message instanceof SegmentPost.SegmentWithTimeSlice) {
             SegmentPost.SegmentWithTimeSlice segmentWithTimeSlice = (SegmentPost.SegmentWithTimeSlice) message;
-            TraceSegment segment = segmentWithTimeSlice.getTraceSegment();
+            Segment segment = segmentWithTimeSlice.getSegment();
 
             long minute = segmentWithTimeSlice.getMinute();
             long hour = segmentWithTimeSlice.getHour();
@@ -47,17 +47,19 @@ public class NodeRefDayAnalysis extends AbstractNodeRefAnalysis {
     }
 
     @Override
-    protected void aggregation() throws Exception {
-        RecordData oneRecord;
-        while ((oneRecord = pushOne()) != null) {
-            getClusterContext().lookup(NodeRefDayAgg.Role.INSTANCE).tell(oneRecord);
-        }
+    protected void aggregation() {
+        getRecordAnalysisData().asMap().forEach((key, value) -> {
+            try {
+                getClusterContext().lookup(NodeRefDayAgg.Role.INSTANCE).tell(value);
+            } catch (WorkerNotFoundException e) {
+                logger.error("The role of %s worker not found", NodeRefDayAgg.Role.INSTANCE.roleName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public static class Factory extends AbstractLocalAsyncWorkerProvider<NodeRefDayAnalysis> {
-
-        public static Factory INSTANCE = new Factory();
-
         @Override
         public Role role() {
             return Role.INSTANCE;
